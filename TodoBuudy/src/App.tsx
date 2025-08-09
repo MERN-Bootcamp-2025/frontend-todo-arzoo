@@ -1,30 +1,60 @@
-import { useState } from "react";
-// import Button from "./components/Button"
-import Modal from "./components/Modal";
-import TaskForm, { type TaskData } from "./components/TaskForm";
+import React, { useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { jwtDecode } from "jwt-decode";
+import { setUserFromToken } from "./redux/authSlice";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import DashboardPage from "./pages/DashBoardPage";
 
-const App = () => {
-  const [open, setOpen] = useState(false);
 
-  const handleSubmit = (data: TaskData) => {
-    console.log('Form Data:', data);
-    setOpen(false);
-  };
-
-  return (
-    <div className="h-screen flex items-center justify-center bg-gray-300">
-      <button
-        onClick={() => setOpen(true)}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >
-        Add Task
-      </button>
-
-      <Modal isOpen={open} onClose={() => setOpen(false)} title="Add New Task">
-        <TaskForm onSubmit={handleSubmit} />
-      </Modal>
-    </div>
-  );
+interface DecodedToken {
+  id: string;
+  email: string;
+  role: string;
+  exp: number;
 }
 
-export default App
+const App: React.FC = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      try {
+        const decoded: DecodedToken = jwtDecode(token);
+        // Check if token expired
+        if (decoded.exp * 1000 < Date.now()) {
+          localStorage.removeItem("accessToken");
+          navigate("/login");
+        } else {
+          dispatch(
+            setUserFromToken({
+              user: decoded.id,
+              role: decoded.role,
+            })
+          );
+        }
+      } catch {
+        localStorage.removeItem("accessToken");
+      }
+    }
+  }, [dispatch, navigate]);
+
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+};
+
+export default App;
