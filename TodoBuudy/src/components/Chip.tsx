@@ -39,7 +39,7 @@ const Chip: React.FC<ChipProps> = ({ label, type }) => {
   return (
     <span
       className={clsx(
-        "px-2 py-1 rounded-full text-xs font-semibold capitalize",
+        "px-2 py-1 rounded-full text-xs font-semibold capitalize cursor-pointer",
         colorClass
       )}
     >

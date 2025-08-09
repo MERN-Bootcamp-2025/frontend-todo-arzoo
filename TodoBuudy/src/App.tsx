@@ -21,14 +21,21 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
+    const storedUser = localStorage.getItem("user");
+
     if (token) {
       try {
         const decoded: DecodedToken = jwtDecode(token);
         // Check if token expired
         if (decoded.exp * 1000 < Date.now()) {
           localStorage.removeItem("accessToken");
+          localStorage.removeItem("user");
           navigate("/login");
-        } else {
+        }
+        else if(storedUser){
+          dispatch(setUserFromToken(JSON.parse(storedUser)))
+        }
+        else {
           dispatch(
             setUserFromToken({
               user: decoded.id,
@@ -38,7 +45,11 @@ const App: React.FC = () => {
         }
       } catch {
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        navigate("/login");
       }
+    }else{
+      navigate("/login");
     }
   }, [dispatch, navigate]);
 

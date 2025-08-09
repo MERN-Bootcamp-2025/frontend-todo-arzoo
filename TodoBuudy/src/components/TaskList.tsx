@@ -1,6 +1,7 @@
 import type React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Chip from "./Chip";
+import Button from "./Button";
 
 interface Task {
     id: string;
@@ -39,13 +40,13 @@ const TaskList: React.FC<TaskListProps> = ({tasks, onEdit, onDelete})=>{
           <div className="flex gap-3">
             <button
               onClick={() => onEdit(task)}
-              className="text-gray-500 hover:text-blue-600"
+              className="text-gray-500 hover:text-blue-600 cursor-pointer"
             >
               <FaEdit size={16} />
             </button>
             <button
               onClick={() => onDelete(task.id)}
-              className="text-gray-500 hover:text-red-600"
+              className="text-gray-500 hover:text-red-600 cursor-pointer"
             >
               <FaTrash size={16} />
             </button>

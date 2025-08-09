@@ -1,4 +1,3 @@
-// src/pages/Dashboard.tsx
 import React, { useEffect, useState } from "react";
 import DashboardHeader from "../components/Header";
 import AddTaskModal from "../components/AddTaskModal";
@@ -6,6 +5,9 @@ import UpdateTaskModal from "../components/UpdateTaskModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import api from "../api/api";
 import TaskList from "../components/TaskList";
+import {toast} from 'react-toastify';
+import type { TaskData } from "../components/TaskForm";
+import Button from "../components/Button";
 
 interface Todo {
     id: string;
@@ -47,6 +49,16 @@ const Dashboard: React.FC = () => {
         setIsAddModalOpen(true);
     };
 
+    const handleSavetask = async (taskData: TaskData) =>{
+        try{
+            await api.post('/todo',taskData);
+            toast.success("Task added successfully!");
+            fetchTodos();
+        }catch(error: any){
+            console.error("Error adding task:",error);
+            toast.error("Failed to add task");
+        }
+    }
     // const handleEditClick = (todo: Todo) => {
     //     setSelectedTodo(todo);
     //     setIsUpdateModalOpen(true);
@@ -76,12 +88,13 @@ const Dashboard: React.FC = () => {
             <div className="p-6 max-w-4xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">My Tasks</h1>
-                    <button
+                    {/* <button
                         onClick={handleAddClick}
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                     >
                         Add Task
-                    </button>
+                    </button> */}
+                    <Button onClick={handleAddClick}>+ Add Task</Button>
                 </div>
 
                 {loading ? (
@@ -129,7 +142,7 @@ const Dashboard: React.FC = () => {
                 <AddTaskModal
                     isOpen={isAddModalOpen}
                     onClose={() => setIsAddModalOpen(false)}
-                    onSave={fetchTodos}
+                    onSave={handleSavetask}
                 />
 
                 {selectedTodo && (
