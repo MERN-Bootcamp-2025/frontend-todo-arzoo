@@ -59,15 +59,17 @@ const Dashboard: React.FC = () => {
             toast.error("Failed to add task");
         }
     }
-    // const handleEditClick = (todo: Todo) => {
-    //     setSelectedTodo(todo);
-    //     setIsUpdateModalOpen(true);
-    // };
-
-    // const handleDeleteClick = (todo: Todo) => {
-    //     setSelectedTodo(todo);
-    //     setIsDeleteModalOpen(true);
-    // };
+    
+    const handleUpdateTask = async (id: string, data: TaskData)=>{
+        try {
+            await api.put(`/todo/${id}`,data);
+            toast.success("Task updated successfully!");
+            fetchTodos();            
+        } catch (error) {
+            console.error("Error updating tasks:",error);
+            toast.error("Failed to update task");
+        }
+    }
 
     const handleEditClick = (todo: Todo) => {
         setSelectedTodo(todo);
@@ -163,7 +165,7 @@ const Dashboard: React.FC = () => {
                                 }
                                 : null
                         }
-                        onUpdate={fetchTodos}
+                        onUpdate={handleUpdateTask}
                     />
                 )}
 
