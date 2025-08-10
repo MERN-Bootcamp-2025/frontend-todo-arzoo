@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import axios from "axios";
+import logo from '../assets/logo.png';
 import Button from "../components/Button";
 import { login } from "../redux/authSlice";
 import axios from "axios";
@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
 
       if (res.data && res.data.data) {
         const { id, email, role } = res.data.data.user;
-        const token = res.data.accessToken;
+        const token = res.data.data.accessToken;
 
         // Dispatch login to Redux
         dispatch(
@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
         {/* Logo and Heading */}
         <div className="text-center mb-6">
           <img
-            src="/logo.png"
+            src={logo}
             alt="TaskMaster Logo"
             className="mx-auto mb-2 h-8"
           />

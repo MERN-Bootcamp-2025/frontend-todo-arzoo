@@ -3,7 +3,7 @@ import Button from './Button';
 
 export interface TaskData {
     title: string;
-    description: string;
+    desc: string;
     priority: string;
     status: string
 }
@@ -14,13 +14,13 @@ interface TaskFormProps {
 
 const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
     const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
+    const [desc, setDesc] = useState('');
     const [priority, setPriority] = useState('');
     const [status, setStatus] = useState('');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit({ title, description, priority, status });
+        onSubmit({ title, desc, priority, status });
     }
     return (
         <form onSubmit={handleSubmit} className='space-y-4'>
@@ -36,11 +36,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
                 />
             </div>
             <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Desc</label>
                 <textarea
                     placeholder='Provide a detailed desc. of the task...'
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
                     className='w-full px-4 py-2 border border-gray-300 rounded-md resize-none h-24 focus:ring-2 focus:ring-blue-500 focus:outline-none'
                     required
                 />

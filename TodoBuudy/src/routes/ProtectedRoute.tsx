@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import {type RootState } from "../redux/store";
 
 interface ProtectedRouteProps {
-  children: JSX.Element;
+  children: React.ReactNode;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {

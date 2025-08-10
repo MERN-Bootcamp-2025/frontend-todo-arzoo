@@ -1,4 +1,13 @@
 @import "tailwindcss";
+
+@keyframes dropdown {
+  0% { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-dropdown {
+  animation: dropdown 0.15s ease-out forwards;
+}
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;
