@@ -9,6 +9,7 @@ interface ChipProps {
     type: "status" | "priority";
     todoId: string;
     onUpdate: (updatedTodo: any) => void;
+    disabled?:boolean;
 }
 
 const colorMap = {
@@ -33,7 +34,7 @@ const priorityOptions = ["low", "medium", "high", "critical"];
 type StatusKey = keyof typeof colorMap.status;
 type PriorityKey = keyof typeof colorMap.priority;
 
-const Chip: React.FC<ChipProps> = ({ label, type, todoId, onUpdate }) => {
+const Chip: React.FC<ChipProps> = ({ label, type, todoId, onUpdate,disabled=false }) => {
     const [open, setOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -81,12 +82,14 @@ const Chip: React.FC<ChipProps> = ({ label, type, todoId, onUpdate }) => {
                     "px-2 py-1 rounded-full text-xs font-semibold capitalize cursor-pointer",
                     colorClass
                 )}
-                onClick={()=>setOpen(true)}
+                onClick={()=>{
+                    if(!disabled)setOpen(true);
+                }}
             >
                 {label}
             </span>
 
-            {open && (
+            {open && !disabled && (
                 <div className="absolute mt-1 bg-white border rounded shadow-lg z-10">
                     {
                         options.map((opt)=>(
