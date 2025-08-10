@@ -1,9 +1,14 @@
 import type React from "react";
 import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import api from "../api/api";
 
 interface ChipProps {
     label: string;
     type: "status" | "priority";
+    todoId: string;
+    onUpdate: (updatedTodo: any) => void;
 }
 
 const colorMap = {
@@ -22,30 +27,82 @@ const colorMap = {
     }
 }
 
+const statusOptions = ["todo", "in-progress", "on-hold", "done", "will-not-do"];
+const priorityOptions = ["low", "medium", "high", "critical"];
+
 type StatusKey = keyof typeof colorMap.status;
 type PriorityKey = keyof typeof colorMap.priority;
 
-const Chip: React.FC<ChipProps> = ({ label, type }) => {
-  const normalized = label.toLowerCase();
+const Chip: React.FC<ChipProps> = ({ label, type, todoId, onUpdate }) => {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  let colorClass: string;
+    const normalized = label.toLowerCase();
 
-  if (type === "status") {
-    colorClass = colorMap.status[normalized as StatusKey] ?? "bg-gray-100 text-gray-800";
-  } else {
-    colorClass = colorMap.priority[normalized as PriorityKey] ?? "bg-gray-100 text-gray-800";
-  }
+    let colorClass: string;
 
-  return (
-    <span
-      className={clsx(
-        "px-2 py-1 rounded-full text-xs font-semibold capitalize cursor-pointer",
-        colorClass
-      )}
-    >
-      {label}
-    </span>
-  );
+    if (type === "status") {
+        colorClass = colorMap.status[normalized as StatusKey] ?? "bg-gray-100 text-gray-800";
+    } else {
+        colorClass = colorMap.priority[normalized as PriorityKey] ?? "bg-gray-100 text-gray-800";
+    }
+
+    const handleSelect = async (value: string) => {
+        try {
+            const res = await api.patch(`/todo/${todoId}`, {
+                [type]: value
+            });
+            onUpdate(res.data);
+            setOpen(false);
+            toast.success("Successfully updated todo!")
+
+        } catch (error) {
+            console.error("Error updating todo:", error);
+            toast.error("Failed to update")
+        }
+    }
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const options = type === "status" ? statusOptions : priorityOptions;
+
+    return (
+        <div className="relative inline-block" ref={dropdownRef}>
+            <span
+                className={clsx(
+                    "px-2 py-1 rounded-full text-xs font-semibold capitalize cursor-pointer",
+                    colorClass
+                )}
+                onClick={()=>setOpen(true)}
+            >
+                {label}
+            </span>
+
+            {open && (
+                <div className="absolute mt-1 bg-white border rounded shadow-lg z-10">
+                    {
+                        options.map((opt)=>(
+                            <div key={opt} onClick={()=>handleSelect(opt)}
+                            className={clsx(
+                                "px-3 py-1 cursor-pointer capitalize hover:bg-gray-100",
+                                opt === normalized && "bg-gray-200"
+                            )}>
+                                {opt}
+                            </div>
+                        ))
+                    }
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default Chip;

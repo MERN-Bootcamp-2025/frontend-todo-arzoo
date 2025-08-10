@@ -1,7 +1,6 @@
 import type React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Chip from "./Chip";
-import Button from "./Button";
 
 interface Task {
     id: string;
@@ -15,9 +14,10 @@ interface TaskListProps {
     tasks: Task[];
     onEdit: (task: Task) => void;
     onDelete: (id: string) => void;
+    onUpdateTask: (updatedTask: Task) => void;
 }
 
-const TaskList: React.FC<TaskListProps> = ({tasks, onEdit, onDelete})=>{
+const TaskList: React.FC<TaskListProps> = ({tasks, onEdit, onDelete, onUpdateTask})=>{
     if(!tasks.length){
         return <p className="text-center mt-6 text-gray-500">No tasks found</p>;
     }
@@ -33,8 +33,8 @@ const TaskList: React.FC<TaskListProps> = ({tasks, onEdit, onDelete})=>{
             <h3 className="font-semibold text-lg text-gray-900">{task.title}</h3>
             <p className="text-gray-600">{task.desc}</p>
             <div className="flex gap-2 mt-2">
-              <Chip label={task.status} type="status" />
-              <Chip label={task.priority} type="priority" />
+              <Chip label={task.status} type="status" todoId={task.id} onUpdate={onUpdateTask}/>
+              <Chip label={task.priority} type="priority" todoId={task.id} onUpdate={onUpdateTask}/>
             </div>
           </div>
           <div className="flex gap-3">
