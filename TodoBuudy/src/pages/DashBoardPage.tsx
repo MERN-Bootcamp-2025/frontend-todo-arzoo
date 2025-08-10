@@ -5,7 +5,7 @@ import UpdateTaskModal from "../components/UpdateTaskModal";
 import ConfirmDeleteModal from "../components/ConfirmDeleteModal";
 import api from "../api/api";
 import TaskList from "../components/TaskList";
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import type { TaskData } from "../components/TaskForm";
 import Button from "../components/Button";
 
@@ -26,13 +26,36 @@ const Dashboard: React.FC = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
+    const [searchTitle, setSearchTitle] = useState("");
+    const [statusFilter, setStatusFilter] = useState("");
+    const [priorityFilter, setPriorityFilter] = useState("");
+
+    //debounced search state
+    const [debouncedTitle, setDebouncedTitle] = useState(searchTitle);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedTitle(searchTitle);
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTitle])
+
     // Fetch Todos
     const fetchTodos = async () => {
         try {
-            const res = await api.get("/todo");
-            console.log("before setting in state", res.data.todos)
+            const res = await api.get("/todo", {
+                params: {
+                    title: searchTitle || undefined,
+                    status: statusFilter || undefined,
+                    priority: priorityFilter || undefined,
+                }
+            });
+            // console.log("before setting in state", res.data.todos)
             setTodos(res.data.todos);
-            console.log("after setting in state", todos)
+            // console.log("after setting in state", res.data.todos)
         } catch (error) {
             console.error("Error fetching todos:", error);
             setError("Failed to load todos");
@@ -43,30 +66,32 @@ const Dashboard: React.FC = () => {
 
     useEffect(() => {
         fetchTodos();
-    }, []);
+    }, [debouncedTitle, statusFilter, priorityFilter]);
+
+
 
     const handleAddClick = () => {
         setIsAddModalOpen(true);
     };
 
-    const handleSavetask = async (taskData: TaskData) =>{
-        try{
-            await api.post('/todo',taskData);
+    const handleSavetask = async (taskData: TaskData) => {
+        try {
+            await api.post('/todo', taskData);
             toast.success("Task added successfully!");
             fetchTodos();
-        }catch(error: any){
-            console.error("Error adding task:",error);
+        } catch (error: any) {
+            console.error("Error adding task:", error);
             toast.error("Failed to add task");
         }
     }
-    
-    const handleUpdateTask = async (id: string, data: TaskData)=>{
+
+    const handleUpdateTask = async (id: string, data: TaskData) => {
         try {
-            await api.put(`/todo/${id}`,data);
+            await api.put(`/todo/${id}`, data);
             toast.success("Task updated successfully!");
-            fetchTodos();            
+            fetchTodos();
         } catch (error) {
-            console.error("Error updating tasks:",error);
+            console.error("Error updating tasks:", error);
             toast.error("Failed to update task");
         }
     }
@@ -90,13 +115,40 @@ const Dashboard: React.FC = () => {
             <div className="p-6 max-w-4xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">My Tasks</h1>
-                    {/* <button
-                        onClick={handleAddClick}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                        Add Task
-                    </button> */}
                     <Button onClick={handleAddClick}>+ Add Task</Button>
+                </div>
+
+                <div className="flex gap-4 mb-6">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTitle}
+                        onChange={(e) => setSearchTitle(e.target.value)}
+                        className="border rounded p-2 flex-1"
+                    />
+                    <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="border rounded p-2"
+                    >
+                        <option value="">All Status</option>
+                        <option value="todo">Todo</option>
+                        <option value="in-progress">In-Progress</option>
+                        <option value="done">Done</option>
+                        <option value="on-hold">On-hold</option>
+                        <option value="Will-not-do">Will-not-do</option>
+                    </select>
+                    <select
+                        value={priorityFilter}
+                        onChange={(e) => setPriorityFilter(e.target.value)}
+                        className="border rounded p-2"
+                    >
+                        <option value="">All Priority</option>
+                        <option value="critical">Critical</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                    </select>
                 </div>
 
                 {loading ? (
@@ -106,33 +158,6 @@ const Dashboard: React.FC = () => {
                 ) : todos.length === 0 ? (
                     <p>No todos found.</p>
                 ) : (
-                    // <ul className="space-y-4">
-                    //     {todos.map((todo) => (
-                    //         <li
-                    //             key={todo.id}
-                    //             className="bg-white shadow p-4 rounded flex justify-between items-center"
-                    //         >
-                    //             <div>
-                    //                 <h3 className="font-semibold">{todo.title}</h3>
-                    //                 <p className="text-sm text-gray-600">{todo.desc}</p>
-                    //             </div>
-                    //             <div className="flex space-x-3">
-                    //                 <button
-                    //                     onClick={() => handleEditClick(todo)}
-                    //                     className="text-green-500 hover:text-green-700"
-                    //                 >
-                    //                     <FaEdit size={18} />
-                    //                 </button>
-                    //                 <button
-                    //                     onClick={() => handleDeleteClick(todo)}
-                    //                     className="text-red-500 hover:text-red-700"
-                    //                 >
-                    //                     <FaTrash size={18} />
-                    //                 </button>
-                    //             </div>
-                    //         </li>
-                    //     ))}
-                    // </ul>
                     <TaskList
                         tasks={todos}
                         onEdit={handleEditClick}
