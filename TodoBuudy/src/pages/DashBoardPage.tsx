@@ -162,6 +162,10 @@ const Dashboard: React.FC = () => {
                         tasks={todos}
                         onEdit={handleEditClick}
                         onDelete={handleDeleteClick}
+                        onUpdateTask={(updatedTodo) => {
+                            setTodos((prev) =>
+                                prev.map((t) => (t.id === updatedTodo.id ? updatedTodo : t)))
+                        }}
                     />
                 )}
 
