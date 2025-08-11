@@ -36,10 +36,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
                 />
             </div>
             <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>Desc</label>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
                 <textarea
                     placeholder='Provide a detailed desc. of the task...'
                     value={desc}
+                    maxLength={250}
                     onChange={(e) => setDesc(e.target.value)}
                     className='w-full px-4 py-2 border border-gray-300 rounded-md resize-none h-24 focus:ring-2 focus:ring-blue-500 focus:outline-none'
                     required

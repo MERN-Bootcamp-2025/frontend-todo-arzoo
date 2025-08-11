@@ -90,7 +90,7 @@ const Chip: React.FC<ChipProps> = ({ label, type, todoId, onUpdate,disabled=fals
             </span>
 
             {open && !disabled && (
-                <div className="absolute mt-1 bg-white border rounded shadow-lg z-10">
+                <div className="absolute w-[150px] mt-1 bg-white rounded shadow-xl z-10">
                     {
                         options.map((opt)=>(
                             <div key={opt} onClick={()=>handleSelect(opt)}

@@ -52,7 +52,7 @@ const DashboardHeader: React.FC = () => {
     }, [isLoggedIn, navigate]);
 
     return (
-        <header className="bg-white shadow-md px-10 py-3 flex justify-between items-center">
+        <header className="bg-white shadow-md px-5 py-3 flex justify-between items-center">
             {/* Left: Logo */}
             <div
                 className="flex items-center gap-2 cursor-pointer"
@@ -63,11 +63,11 @@ const DashboardHeader: React.FC = () => {
             </div>
 
             {/* Middle: Static Nav */}
-            <nav className="flex gap-6 text-sm text-gray-500">
-                <span className="cursor-default hover:text-black">Home</span>
-                <span className="cursor-default font-semibold text-black">Tasks</span>
-                <span className="cursor-default hover:text-black">Projects</span>
-                <span className="cursor-default hover:text-black">Team</span>
+            <nav className="flex items-center gap-6 ml-[-50px] text-sm text-gray-500">
+                <a href="/home" className="cursor-pointer hover:text-black">Home</a>
+                <a href="/dashboard" className="cursor-pointer font-semibold text-black">Tasks</a>
+                <a href="/users" className="cursor-pointer hover:text-black">Users</a>
+                {/* <span className="cursor-default hover:text-black">Team</span> */}
             </nav>
 
             {/* Right: + button (Admin only) & User Dropdown */}
@@ -117,8 +117,7 @@ const DashboardHeader: React.FC = () => {
 
                         {/* Dropdown */}
                         {isDropdownOpen && (
-                            <div
-                                className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-10 flex flex-col
+                            <div className="absolute right-0 mt-2 h-20 w-40 px-4 py-5 bg-white rounded-md shadow-xl z-10 flex flex-col
                            transform origin-top transition-all duration-200 scale-95 animate-dropdown"
                             >
                                 <Button

@@ -157,7 +157,7 @@ const Dashboard: React.FC = () => {
                     <Button onClick={handleAddClick}>+ Add Task</Button>
                 </div>
 
-                <div className="w-full shadow-sm px-5 py-2 flex flex-col gap-5">
+                <div className="w-full px-5 py-2 flex flex-col gap-5">
 
                     <input
                         type="text"
