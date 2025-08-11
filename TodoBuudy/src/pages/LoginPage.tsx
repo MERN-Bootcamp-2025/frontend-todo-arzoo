@@ -31,7 +31,7 @@ const LoginPage: React.FC = () => {
       });
 
       if (res.data && res.data.data) {
-        const { id, email, role } = res.data.data.user;
+        const { id, role } = res.data.data.user;
         const token = res.data.data.accessToken;
 
         // Dispatch login to Redux

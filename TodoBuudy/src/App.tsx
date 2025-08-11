@@ -6,6 +6,7 @@ import { setUserFromToken } from "./redux/authSlice";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import DashboardPage from "./pages/DashBoardPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 
 interface DecodedToken {
@@ -64,6 +65,7 @@ const App: React.FC = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="*" element={<NotFoundPage/>}/>
     </Routes>
   );
 };
