@@ -23,11 +23,11 @@ const TaskList: React.FC<TaskListProps> = ({tasks, onEdit, onDelete, onUpdateTas
     }
 
     return (
-    <div className="mt-6 space-y-4 ml-[28px] mr-[28px]">
+    <div className="mt-6  space-y-5 ml-[28px] mr-[28px]">
       {tasks.map((task) => (
         <div
           key={task.id}
-          className={`bg-white shadow-sm rounded p-6 flex justify-between items-start`}
+          className={`bg-white shadow-sm rounded p-6 flex justify-between items-start `}
         >
           <div>
             <h3 className={`font-semibold text-lg text-gray-800 ${task.status === 'done' ? "line-through text-red-600":""}`}>{task.title}</h3>

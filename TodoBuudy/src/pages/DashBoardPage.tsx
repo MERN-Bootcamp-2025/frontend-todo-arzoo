@@ -92,7 +92,7 @@ const Dashboard: React.FC = () => {
     const handleScroll = () => {
         const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
-        if (!loading && hasMore && scrollTop + clientHeight >= scrollHeight -50) {
+        if (!loading && hasMore && scrollTop + clientHeight >= scrollHeight - 50) {
             setPage((prev) => prev + 1);
         }
     };
@@ -151,44 +151,48 @@ const Dashboard: React.FC = () => {
     return (
         <>
             <DashboardHeader />
-            <div className="p-6 max-w-4xl mx-auto">
+            <div className="p-6 max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold">My Tasks</h1>
                     <Button onClick={handleAddClick}>+ Add Task</Button>
                 </div>
 
-                <div className="flex gap-4 mb-6">
+                <div className="w-full shadow-sm px-5 py-2 flex flex-col gap-5">
+
                     <input
                         type="text"
                         placeholder="Search"
                         value={searchTitle}
                         onChange={(e) => setSearchTitle(e.target.value)}
-                        className="border rounded p-2 flex-1"
+                        className=" shadow-lg rounded-xl p-4 flex-1"
                     />
-                    <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="border rounded p-2"
-                    >
-                        <option value="">All Status</option>
-                        <option value="todo">Todo</option>
-                        <option value="in-progress">In-Progress</option>
-                        <option value="done">Done</option>
-                        <option value="on-hold">On-hold</option>
-                        <option value="Will-not-do">Will-not-do</option>
-                    </select>
-                    <select
-                        value={priorityFilter}
-                        onChange={(e) => setPriorityFilter(e.target.value)}
-                        className="border rounded p-2"
-                    >
-                        <option value="">All Priority</option>
-                        <option value="critical">Critical</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-                    </select>
+                    <div className="flex gap-4 mb-2">
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="w-full shadow-lg rounded-xl p-4"
+                        >
+                            <option value="">All Status</option>
+                            <option value="todo">Todo</option>
+                            <option value="in-progress">In-Progress</option>
+                            <option value="done">Done</option>
+                            <option value="on-hold">On-hold</option>
+                            <option value="Will-not-do">Will-not-do</option>
+                        </select>
+                        <select
+                            value={priorityFilter}
+                            onChange={(e) => setPriorityFilter(e.target.value)}
+                            className="w-full shadow-lg  rounded-xl p-4"
+                        >
+                            <option value="">All Priority</option>
+                            <option value="critical">Critical</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
                 </div>
+
 
                 {loading ? (
                     <p>Loading todos...</p>
