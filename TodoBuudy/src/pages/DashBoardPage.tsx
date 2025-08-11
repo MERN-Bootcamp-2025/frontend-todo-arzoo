@@ -33,6 +33,10 @@ const Dashboard: React.FC = () => {
     //debounced search state
     const [debouncedTitle, setDebouncedTitle] = useState(searchTitle);
 
+    const [page, setPage] = useState(0);
+    const limit = 6;
+    const [hasMore, setHasMore] = useState(true);
+
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedTitle(searchTitle);
@@ -44,31 +48,66 @@ const Dashboard: React.FC = () => {
     }, [searchTitle])
 
     // Fetch Todos
-    const fetchTodos = async () => {
+    const fetchTodos = async (pageNum = 1) => {
         try {
+            setLoading(true);
             const res = await api.get("/todo", {
                 params: {
                     title: searchTitle || undefined,
                     status: statusFilter || undefined,
                     priority: priorityFilter || undefined,
+                    page: pageNum,
+                    limit: limit,
                 }
             });
             // console.log("before setting in state", res.data.todos)
-            setTodos(res.data.todos);
+
+            const newTodos = res.data.todos;
+
+            if (pageNum === 1) {
+                setTodos(newTodos);
+            } else {
+                setTodos((prev) => [...prev, ...newTodos]);
+            }
+
+            if (newTodos.length < limit) {
+                setHasMore(false);
+            }
+            // setTodos(res.data.todos);
             // console.log("after setting in state", res.data.todos)
         } catch (error) {
             console.error("Error fetching todos:", error);
             setError("Failed to load todos");
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
     };
 
     useEffect(() => {
-        fetchTodos();
+        setPage(1);
+        setHasMore(true);
+        fetchTodos(1);
     }, [debouncedTitle, statusFilter, priorityFilter]);
 
+    const handleScroll = () => {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 
+        if (!loading && hasMore && scrollTop + clientHeight >= scrollHeight -50) {
+            setPage((prev) => prev + 1);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+
+    }, [loading, hasMore])
+
+    useEffect(() => {
+        if (page > 1) {
+            fetchTodos(page);
+        }
+    }, [page]);
 
     const handleAddClick = () => {
         setIsAddModalOpen(true);
